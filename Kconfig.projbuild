@@ -1,0 +1,48 @@
+menu "Component - DalyBMS UART Settings"
+
+    #############################
+    #    DalyBMS UART CONFIG    #
+    #############################
+
+    config BMS_TXD
+        int "BMS UART TX pin"
+        range -1 33
+        default 13
+        help
+            Select Tx pin for DalyBMS UART connection.
+
+    config BMS_RXD
+        int "BMS UART RX pin"
+        range -1 33
+        default 12
+        help
+            Select Rx pin for DalyBMS UART connection.
+
+    config BMS_RTS
+        int "BMS UART RTS pin"
+        range -1 33
+        default -1
+        help
+            Select RTS pin for DalyBMS UART connection or -1 for no pin.
+
+    config BMS_CTS
+        int "BMS UART CTS pin"
+        range -1 33
+        default -1
+        help
+            Select CTS pin for DalyBMS UART connection or -1 for no pin.
+
+    config BMS_ADDRESS
+        int "BMS address"
+        default 64
+        help
+            Select decimal address for DalyBMS UART.
+
+    config BMS_RETRIES
+        int "BMS request retries"
+        range 1 32
+        default 3
+        help
+            Select number of request retries for DalyBMS UART.
+
+endmenu
