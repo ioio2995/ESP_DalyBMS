@@ -77,6 +77,7 @@ std::vector<std::vector<uint8_t>> DalyBMS::read(const std::string &command, cons
 {
     uart_flush(uart_port);
     std::vector<uint8_t> message_bytes = format_message(command, extra);
+    ESP_LOGD(TAG, "Raw UART trame request: %s",  bytes_to_hex_string(message_bytes).c_str());
     uart_write_bytes(uart_port, reinterpret_cast<const char *>(message_bytes.data()), message_bytes.size());
 
     vTaskDelay(pdMS_TO_TICKS(200));
@@ -96,7 +97,7 @@ std::vector<std::vector<uint8_t>> DalyBMS::read(const std::string &command, cons
             break;
         }
 
-        ESP_LOGD(TAG, "Raw status response: %s", bytes_to_hex_string(std::vector<uint8_t>(buffer, buffer + len)).c_str());
+        ESP_LOGD(TAG, "Raw UART trame response: %s", bytes_to_hex_string(std::vector<uint8_t>(buffer, buffer + len)).c_str());
 
         if (buffer[2] != expected_data_id)
         {
