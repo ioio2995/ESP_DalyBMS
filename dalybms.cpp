@@ -54,12 +54,12 @@ std::vector<uint8_t> DalyBMS::format_message(const std::string &command, const s
     return message_bytes;
 }
 
-std::vector<std::vector<uint8_t>> DalyBMS::read_request(const std::string &command, const std::string &extra, int max_responses, int timeout)
+std::vector<std::vector<uint8_t>> DalyBMS::read_request(const std::string &command, const std::string &extra, int max_responses, int wait, int timeout)
 {
     std::vector<std::vector<uint8_t>> response_data;
     for (int x = 0; x < BMS_RETRIES; ++x)
     {
-        response_data = read(command, extra, max_responses, timeout);
+        response_data = read(command, extra, max_responses, wait, timeout);
         if (response_data.empty())
         {
             ESP_LOGW(TAG, "No data read from serial port on attempt %d", x + 1);
@@ -73,14 +73,14 @@ std::vector<std::vector<uint8_t>> DalyBMS::read_request(const std::string &comma
     return response_data;
 }
 
-std::vector<std::vector<uint8_t>> DalyBMS::read(const std::string &command, const std::string &extra, int max_responses, int timeout)
+std::vector<std::vector<uint8_t>> DalyBMS::read(const std::string &command, const std::string &extra, int max_responses, int wait, int timeout)
 {
     uart_flush(uart_port);
     std::vector<uint8_t> message_bytes = format_message(command, extra);
     ESP_LOGD(TAG, "Raw UART trame request: %s",  bytes_to_hex_string(message_bytes).c_str());
     uart_write_bytes(uart_port, reinterpret_cast<const char *>(message_bytes.data()), message_bytes.size());
 
-    vTaskDelay(pdMS_TO_TICKS(200));
+    vTaskDelay(pdMS_TO_TICKS(wait));
 
     std::vector<std::vector<uint8_t>> response_data;
     int x = 0;
@@ -292,7 +292,7 @@ std::map<int, int> DalyBMS::get_temperatures()
     int num_per_frame = 7;
     int max_responses = (nb_temperature_sensors_ + num_per_frame - 1) / num_per_frame;
 
-    auto response_data = read_request("96", "", max_responses);
+    auto response_data = read_request("96", "", max_responses, 1000);
     if (response_data.empty())
         return {};
 

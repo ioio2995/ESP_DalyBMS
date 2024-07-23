@@ -31,8 +31,8 @@ public:
 
 private:
     std::vector<uint8_t> format_message(const std::string &command, const std::string &extra);
-    std::vector<std::vector<uint8_t>> read_request(const std::string &command, const std::string &extra = "", int max_responses = 1, int timeout = 100);
-    std::vector<std::vector<uint8_t>> read(const std::string &command, const std::string &extra, int max_responses, int timeout);
+    std::vector<std::vector<uint8_t>> read_request(const std::string &command, const std::string &extra = "", int max_responses = 1, int wait = 200, int timeout = 100);
+    std::vector<std::vector<uint8_t>> read(const std::string &command, const std::string &extra, int max_responses, int wait, int timeout);
 
     template<typename T> T unpack_single(const std::vector<uint8_t> &data, size_t &offset);
     template<typename... Args> std::tuple<Args...> unpack_response(const std::vector<uint8_t> &response_data);
